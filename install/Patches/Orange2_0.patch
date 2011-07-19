@@ -168,21 +168,21 @@ diff -crBN orange2.0/source/orange/tabdelim.cpp orange2.0_PatchedOK/source/orang
       
       if (status == 3)
 ***************
-*** 506,512 ****
+*** 509,515 ****
         const char *ceni = ai->c_str();
         if (   !*ceni
             || !ceni[1] && ((*ceni=='?') || (*ceni=='.') || (*ceni=='~') || (*ceni=='*'))
 !           || (*ai == "NA") || (DC && (*ai == DC)) || (DK && (*ai == DK)))
            continue;
-  
+
         map<string, int>::iterator vf = di->values.lower_bound(*ai);
---- 532,538 ----
+--- 509,515 ----
         const char *ceni = ai->c_str();
         if (   !*ceni
             || !ceni[1] && ((*ceni=='?') || (*ceni=='.') || (*ceni=='~') || (*ceni=='*'))
 !           || (strToUpper(*ai) == "NA") || (strToUpper(*ai) == "N/A") || (strToUpper(*ai) == "ERROR") || (strToUpper(*ai) == "MIS_VAL") || (strToUpper(*ai) == "NAN") || (DC && (*ai == DC)) || (DK && (*ai == DK)))  //scPA  added the symbols "error", "MIS_VAL" and "NAN"     //ecPA
            continue;
-  
+
         map<string, int>::iterator vf = di->values.lower_bound(*ai);
 ***************
 *** 849,855 ****
@@ -252,7 +252,7 @@ diff -crBN orange2.0/source/orange/tabdelim.cpp orange2.0_PatchedOK/source/orang
 ***************
 *** 904,910 ****
                 fprintf(file, " ");
-  
+
               if (mval.floatV == 1.0)
 !               fprintf(file, checkCtrl(var.name.c_str()));
               else {
@@ -260,12 +260,12 @@ diff -crBN orange2.0/source/orange/tabdelim.cpp orange2.0_PatchedOK/source/orang
                 fprintf(file, "%s=%s", checkCtrl(var.name.c_str()), checkCtrl(st.c_str()));
 --- 930,936 ----
                 fprintf(file, " ");
-  
+
               if (mval.floatV == 1.0)
 !               fprintf(file, "%s", checkCtrl(var.name.c_str()));
               else {
                 var.val2filestr(mval, st, *ex);
-                fprintf(file, "%s=%s", checkCtrl(var.name.c_str()), checkCtrl(st.c_str()));
+                fprintf(file, "%s=%s", checkCtrl(var_name.c_str()), checkCtrl(st.c_str()));
 ***************
 *** 939,945 ****
         fprintf(file, "d");
@@ -305,55 +305,6 @@ diff -crBN orange2.0/source/orange/tabdelim.hpp orange2.0_PatchedOK/source/orang
   
     virtual bool readExample (TFileExampleIteratorData &, TExample &);
   
-*** orange2.0/orngAddOns.py	2010-08-26 14:18:32.000000000 +0200
---- orange2.0_PatchedOK/orngAddOns.py	2010-08-26 14:19:38.000000000 +0200
-***************
-*** 805,811 ****
-              try:
-                  addOn = OrangeAddOnInstalled(addOnDir)
-              except Exception, e:
-!                 print "Add-on in directory '%s' has no valid descriptor (addon.xml): %s" % (addOnDir, e)
-                  continue
-              if addOn.id in installedAddOns:
-                  print "Add-on in directory '%s' has the same ID as the addon in '%s'!" % (addOnDir, installedAddOns[addOn.id].directory)
---- 805,811 ----
-              try:
-                  addOn = OrangeAddOnInstalled(addOnDir)
-              except Exception, e:
-! #                print "Add-on in directory '%s' has no valid descriptor (addon.xml): %s" % (addOnDir, e)
-                  continue
-              if addOn.id in installedAddOns:
-                  print "Add-on in directory '%s' has the same ID as the addon in '%s'!" % (addOnDir, installedAddOns[addOn.id].directory)
-***************
-*** 832,838 ****
-          except Exception, e:
-              print "Unable to load repository list! Error: %s" % e
-      try:
-!         updateDefaultRepositories()
-      except Exception, e:
-          print "Unable to refresh default repositories: %s" % (e)
-      for r in availableRepositories:
---- 832,839 ----
-          except Exception, e:
-              print "Unable to load repository list! Error: %s" % e
-      try:
-! #        updateDefaultRepositories()
-!          pass
-      except Exception, e:
-          print "Unable to refresh default repositories: %s" % (e)
-      for r in availableRepositories:
-***************
-*** 1043,1046 ****
-  
-  addAddOnDirectoriesToPath()
-  
-! loadRepositories()
-\ No newline at end of file
---- 1044,1047 ----
-  
-  addAddOnDirectoriesToPath()
-  
-! loadRepositories()
 *** orange2.0/install-scripts/linux/setup.py    2007-02-20 20:20:17.000000000 +0000
 --- orange2.0_PatchedOK/install-scripts/linux/setup.py  2010-05-27 14:59:32.673526075 +0100
 ***************
