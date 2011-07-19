@@ -1,18 +1,20 @@
-import unittest
+import logging
 import os
 import time
+import unittest
 
 import orange
 from trainingMethods import AZorngPLS
 from AZutilities import dataUtilities
 import AZOrangeConfig as AZOC
-import AZorngTestUtil
-import orngImpute
 
 
 class dataUtilitiesTest(unittest.TestCase):
 
     def setUp(self):
+        logging.basicConfig(level=logging.ERROR)
+        self.log = logging.getLogger("dataUtilitiesTest")
+
         """Sets up the test """
         unusedValuesDataPath = os.path.join(AZOC.AZORANGEHOME,"tests/source/data/BinClass_No_metas_UnusedValues_Train.tab")
         multiClassDataPath = os.path.join(AZOC.AZORANGEHOME,"tests/source/data/iris.tab")
@@ -382,7 +384,13 @@ class dataUtilitiesTest(unittest.TestCase):
         
         self.assertEqual("['Measure', '[Br]([C])', '[N]([N])', '[O]([C])', '[C]([C][F])', 'Level', 'DiscAttr1', 'DiscAttr2', 'Attr3', 'YetOther', 'Activity']",str(scaler2.varNames))
         self.assertEqual("[[], [], [], [], [], [], ['Red', 'Green', 'Blue'], ['YES', 'NO'], ['1', '2', '3', '4', '5'], ['B', 'A', 'C', '1'], ['POS', 'NEG']]",str(scaler2.values))
-        self.assertEqual("[11.0, 0.0, 0.0, 5.0, 1.0, 5.6697301864624023, 2.0, 1.0, 4.0, 3.0, 1.0]",str(scaler2.maximums))
+        
+        expected = "[11.0, 0.0, 0.0, 5.0, 1.0, 5.669730186462402, 2.0, 1.0, 4.0, 3.0, 1.0]"
+        actual = str(scaler2.maximums)
+        self.log.info("")
+        self.log.info("expected=" + str(expected))
+        self.log.info("actual  =" + str(actual))
+        self.assertEqual(expected, actual)
         self.assertEqual("[0.0, 0.0, 0.0, 0.0, 0.0, 0.035923998802900314, 0.0, 0.0, 0.0, 0.0, 0.0]",str(scaler2.minimums))
 
         ex = scaler2.scaleEx(self.testData[3])
@@ -575,6 +583,9 @@ class dataUtilitiesTest(unittest.TestCase):
         classifier=AZorngPLS.PLSLearner(self.testData)
         
         # Test different but compatible vartypes
+        self.log.info("")
+        self.log.info("expected=" + str("NEG"))
+        self.log.info("actual  =" + str(classifier(self.badVarTypeData[12])))
         self.assert_(classifier(self.badVarTypeData[12])=="NEG","VarType: Prediction was not done correcly")
         #test fixed  Different data order  
         self.assert_(classifier(self.badVarOrderData[0])=="NEG","VarOrder(0): Prediction was not done correcly")
