@@ -38,7 +38,7 @@ DetailsLogFile = ./details.log
 ;The templateProfileFile will also be always placed in root of installDir in a
 ; system installation or in the root of trunkDir in a developer installation as well as in the current dir
 TemplateProfileFile = ./templateProfile
-
+TemplateProfileFileBash = ./templateProfile.bash
 
 [Tests]
 ;Run the tests in test suite after install: Yes or No
