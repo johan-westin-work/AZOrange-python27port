@@ -170,11 +170,15 @@ class installerClass:
             os.remove(os.path.join(self.orangeInstallDir,"orange","liborange.so"))
         except:
             print "Unable to remove orange/liborange.so"
+        savedCwd = os.getcwd()
         try:
-            os.symlink(os.path.join(self.orangeInstallDir,"orange","orange.so"), os.path.join(self.orangeInstallDir,"orange","liborange.so"))
+            os.chdir(os.path.join(self.orangeInstallDir, "orange"))
+            os.symlink("orange.so", "liborange.so")
         except:
             print "Failed to link liborange.so"
             sys.exit(1)
+        os.chdir(savedCwd)
+
         # Also copy the shared libraries that were built separately.
         #print "Copying c45.so and _orngCRS.so to installation directory."
         #try:
