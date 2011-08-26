@@ -260,8 +260,8 @@ class Installer:
         self.cdkDir = os.path.join(self.buildDir,"orangeDependencies/src/cdk")
         self.ftmDir = os.path.join(self.buildDir,"orangeDependencies/src/ftm")
         self.plearnDir = os.path.join(self.buildDir,"orangeDependencies/src/plearn")
+        self.ctoolsDir = os.path.join(self.buildDir,"orangeDependencies/src/Ctools")
         self.R8Dir = os.path.join(self.buildDir,"orangeDependencies/src/R8/Src")
-        self.ctoolsDir = (self.buildDir,"orangeDependencies/src/Ctools")
 
         self.trainingDir = os.path.join(self.buildDir,"azorange/trainingMethods")
 
@@ -914,9 +914,13 @@ class Installer:
         saveCwd = os.getcwd()
         try: 
             os.chdir(self.ctoolsDir)
+            installDir = os.path.join(self.orangeDependenciesDir, "bin")
             print "Building in:   ", self.ctoolsDir
+            print "Installing in: ", installDir
         
-            stat, out = commands.getstatusoutput("make install")
+            stat, out = commands.getstatusoutput("make clean")
+            checkStatus(stat, out, "Error preparing ctools.")
+            stat, out = commands.getstatusoutput("make INSTALL_DIR=\"" + installDir + "\" install")
             checkStatus(stat, out, "Error installing ctools.")
         finally:
             os.chdir(saveCwd)            
