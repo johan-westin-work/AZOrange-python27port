@@ -86,6 +86,7 @@ class Installer:
         self.ftmDir = None
         self.plearnDir = None
         self.R8Dir = None
+        self.ctoolsDir = None
         self.trainingDir = None
         # dir to install all other orange dependencies packages as opencv, fann, PLearn, etc...
         self.orangeDependenciesDir = None
@@ -196,6 +197,9 @@ class Installer:
         # Compile and install the azFann.
         self.compileAZFann()
 
+        # Compile and install the Ctools.
+        self.compileCtools()
+
         # Compile and install the AZOrange C++ layer
         self.compileAZOrange()
 
@@ -257,6 +261,8 @@ class Installer:
         self.ftmDir = os.path.join(self.buildDir,"orangeDependencies/src/ftm")
         self.plearnDir = os.path.join(self.buildDir,"orangeDependencies/src/plearn")
         self.R8Dir = os.path.join(self.buildDir,"orangeDependencies/src/R8/Src")
+        self.ctoolsDir = (self.buildDir,"orangeDependencies/src/Ctools")
+
         self.trainingDir = os.path.join(self.buildDir,"azorange/trainingMethods")
 
         # dir to install all other orange dependencies packages as opencv, fann, PLearn, etc...
@@ -897,6 +903,23 @@ class Installer:
         # At runtime we will neew LD_LIBRARY_PATH to include the location of new installed libs
         self.__prependEnvVar("LD_LIBRARY_PATH" , os.path.join(FANNinstallDir,"lib"))
         self.__prependEnvVar("PYTHONPATH" , os.path.join(FANNinstallDir,"lib/pyfann"))
+
+
+    def compileCtools(self):
+        print "Compiling Ctools"
+        if not self.dependencies["Ctools"]:
+            print "Not using the local Ctools"
+            return 
+
+        saveCwd = os.getcwd()
+        try: 
+            os.chdir(self.ctoolsDir)
+            print "Building in:   ", self.ctoolsDir
+        
+            stat, out = commands.getstatusoutput("make install")
+            checkStatus(stat, out, "Error installing Ctools.")
+        finally:
+            os.chdir(saveCwd)            
 
 
     def compileAZOrange(self):
