@@ -197,7 +197,7 @@ class Installer:
         # Compile and install the azFann.
         self.compileAZFann()
 
-        # Compile and install the Ctools.
+        # Compile and install the ctools.
         self.compileCtools()
 
         # Compile and install the AZOrange C++ layer
@@ -906,9 +906,9 @@ class Installer:
 
 
     def compileCtools(self):
-        print "Compiling Ctools"
-        if not self.dependencies["Ctools"]:
-            print "Not using the local Ctools"
+        print "Compiling ctools"
+        if not self.dependencies["ctools"]:
+            print "Not using the local ctools"
             return 
 
         saveCwd = os.getcwd()
@@ -917,7 +917,7 @@ class Installer:
             print "Building in:   ", self.ctoolsDir
         
             stat, out = commands.getstatusoutput("make install")
-            checkStatus(stat, out, "Error installing Ctools.")
+            checkStatus(stat, out, "Error installing ctools.")
         finally:
             os.chdir(saveCwd)            
 
