@@ -375,10 +375,10 @@ class Installer:
 
     def __logAndExecute(self, command, logOutput=False):
         if self.verboseLogging:
-            self.__addLog("setup - About to execute (in " + os.getcwd() + "): " + command)
+            self.__addLog("#setup - About to execute (in " + os.getcwd() + "): " + command)
         status, output = commands.getstatusoutput(command)
         if logOutput:
-            self.__addLog("setup - Output from command: " + output)            
+            self.__addLog((status, "#setup - Output from command: " + str(output)))            
         return status, output
 
 
