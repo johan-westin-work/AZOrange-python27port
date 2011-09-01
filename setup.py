@@ -907,7 +907,7 @@ class Installer:
 
     def compileCtools(self):
         print "Compiling ctools"
-        if not self.dependencies["ctools"]:
+        if "ctools" not  in self.dependencies or not self.dependencies["ctools"]:
             print "Not using the local ctools"
             return 
 
@@ -1062,7 +1062,10 @@ class Installer:
                     gotDir = False
                     
                 if gotDir:
-                    self.appsPackGccModule = options.appspackgccmodule
+                    if options.appspackgccmodule and options.appspackgccmodule.lower() != "none":
+                        self.appsPackGccModule = options.appspackgccmodule
+                    else:
+                        self.appsPackGccModule = None
                     self.dependencies = eval(options.dependencies)
                     self.detailsLogFile = options.detailslogfile
                     self.envFile = options.envfile
