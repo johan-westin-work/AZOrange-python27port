@@ -88,7 +88,8 @@ def getNearestNeighbors(query, n, NNDataPath, FPPath = None, resPath = None, idx
 
 
     Nbits = 2048
-    status,output = commands.getstatusoutput('echo "' + query + '" | fpin ' + FPPath + " "  +NNDataPath + ' 0.0 '+str(n))
+    cmdStr = 'echo "' + query + '" | fpin ' + FPPath + " "  +NNDataPath + ' 0.0 '+str(n)
+    status,output = commands.getstatusoutput(cmdStr)
     if status:
         print status
         print output
