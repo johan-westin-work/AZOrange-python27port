@@ -885,7 +885,7 @@ class Installer:
                 os.chdir(self.azFannDir)
                 print "Building in:   ",self.azFannDir
                 print "Installing in: ",FANNinstallDir
-                stat, out = commands.getstatusoutput("./configure --prefix=\"" + FANNinstallDir  + "\"")
+                stat, out = commands.getstatusoutput("./configure CFLAGS=-fPIC --prefix=\"" + FANNinstallDir  + "\"")
                 checkStatus(stat, out,"Error configuring Fann.")
                 stat, out = commands.getstatusoutput("make")
                 checkStatus(stat, out,"Error compiling Fann.")
