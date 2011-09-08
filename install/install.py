@@ -147,7 +147,7 @@ class Installer(object):
         if self.verbosedLogging:
             self.addLog("install - About to execute (in " + os.getcwd() + "): " + command)
         status, output = commands.getstatusoutput(command)
-        self.addLog("install - Output from command: " + str(output))
+        self.addLog((status, output))
         return status, output
 
 
