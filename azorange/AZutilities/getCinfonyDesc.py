@@ -5,13 +5,13 @@ import random
 import string
 
 import orange
-from AZutilities import dataUtilities
+from AZutilities import InHouseUtilities as dataUtilities
 import AZOrangeConfig as AZOC
 
 
 #toolkitsEnabled = ["cdk","rdk","obabel","webel"]        # NOT so stable!!
 #toolkitsEnabled = ["rdk","obabel","webel"]              # Testing Stability!!
-toolkitsEnabled = ["rdk","webel"]                        # Stable
+toolkitsEnabled = ["rdk"]                                # Stable
 
 if "cdk" in toolkitsEnabled:
     try: 
@@ -275,7 +275,7 @@ def getCinfonyDescResults(origData,descList,radius=1):
     # Standardize SMILES
     for ex in data:
         ex["origSmiles"] = ex[smilesName].value
-    #TODO: Call here some method to standardize the attribute smilesName in place having the attr origSmiles as ID
+    dataUtilities.StandardizeSMILES(data,smiAttr = smilesName, cName="origSmiles")
     results = []
 
     # Calculate available descriptors
