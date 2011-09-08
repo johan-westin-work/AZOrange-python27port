@@ -145,9 +145,9 @@ class Installer(object):
 
     def __logAndExecute(self, command):
         if self.verbosedLogging:
-            self.addLog("install - About to execute (in " + os.getcwd() + "): " + command)
+            self.addLog("#install - About to execute (in " + os.getcwd() + "): " + command)
         status, output = commands.getstatusoutput(command)
-        self.addLog((status, output))
+        self.addLog((status, "#install - Output from command: " + str(output)))
         return status, output
 
 
@@ -1053,6 +1053,8 @@ class Installer(object):
         libPathsStr = ""
         for idx,value in enumerate(self.EnvVars["LD_LIBRARY_PATH"]):
             if idx: libPathsStr += ":"
+            if str(value).startswith(self.AZOrangeInstallDir):
+                value = "$AZORANGEHOME" + str(value)[len(self.AZOrangeInstallDir):] 
             libPathsStr += value
         if shellType == SHELL_TYPE_BASH:
             strFile += "if [[ ! -z $LD_LIBRARY_PATH ]] ; then\n"
@@ -1082,6 +1084,8 @@ class Installer(object):
         pythonPathsStr = ""
         for idx,value in enumerate(self.EnvVars["PYTHONPATH"]):
             if idx: pythonPathsStr += ":"
+            if str(value).startswith(self.AZOrangeInstallDir):
+                value = "$AZORANGEHOME" + str(value)[len(self.AZOrangeInstallDir):] 
             pythonPathsStr += value
         if shellType == SHELL_TYPE_BASH:
             strFile += "if [[ ! -z $PYTHONPATH ]] ; then\n"
@@ -1154,13 +1158,14 @@ class Installer(object):
             if localTemplateFile != self.TemplateProfileFile:
                 self.__logAndExecute("cp -p" + localTemplateFile  +" "+ self.TemplateProfileFile)
             self.addLog("#Profile template file created in "+self.TemplateProfileFile)
-            #Write the template file to the install dir depending on the installType
-            if self.installType == "system" or self.repoInter=="export":
-                self.addLog("#Profile template file copied into installDir")
-                self.__logAndExecute("cp " + localTemplateFile + " " + self.AZOrangeInstallDir)
-            else:            
-                self.addLog("#Profile template file copied into trunkDir")
-                self.__logAndExecute("cp " + localTemplateFile + " " + self.trunkDir)
+
+        #Write the template file to the install dir depending on the installType
+        if self.installType == "system" or self.repoInter=="export":
+            self.addLog("#Profile template file copied into installDir")
+            self.__logAndExecute("cp " + localTemplateFile + " " + self.AZOrangeInstallDir)
+        else:            
+            self.addLog("#Profile template file copied into trunkDir")
+            self.__logAndExecute("cp " + localTemplateFile + " " + self.trunkDir)
 
 
     def InstallCacheCleaner(self):
