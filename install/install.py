@@ -438,6 +438,7 @@ class Installer(object):
 
 
     def checkOutOpenAZO(self):
+        USE_INSTALLED = False
         if self.repoInter=="yes":
             #Update the AZO source from GITHub
             os.chdir(self.trunkDir)
@@ -461,7 +462,7 @@ class Installer(object):
                         self.addLog("*Cloning from GIT")
                         self.addLog("#trunk: "+self.trunkDir)
                         self.__logAndExecute("rm -rf AZOrange")
-                        self.__logAndExecute("git clone "+self.repo)
+                        self.__logAndExecute("git clone "+ self.repo)
                         self.__logAndExecute("cp -Rf AZOrange/* .")
                         self.__logAndExecute("cp -Rf AZOrange/.git " + self.trunkDir)
                         self.__logAndExecute("rm -rf AZOrange")
