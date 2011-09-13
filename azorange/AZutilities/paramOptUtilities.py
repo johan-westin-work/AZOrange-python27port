@@ -306,7 +306,7 @@ class Appspack:
         optimized = False
         if self.learner.optimized:
             optimized = True
-            raise Exeption("Learner should not be optimized already! Check method Appspack::assignTunedParameters() in paramOptUtilities.py")
+            raise Exception("Learner should not be optimized already! Check method Appspack::assignTunedParameters() in paramOptUtilities.py")
             tunedParameters = self.processAppspackResults()  # Deprecated. will not be called!
         else:
             tunedParameters = self.processIntResResults()
@@ -343,7 +343,7 @@ class Appspack:
                     setattr(self.learner, key, eval(tunedParameters[1][key]))
                 else:
                     if eval(self.parameters[key][0]) == types.BooleanType:
-                        serattr(self.learner, key, types.BooleanType(eval(tunedParameters[1][key])))
+                        setattr(self.learner, key, types.BooleanType(eval(tunedParameters[1][key])))
                     elif eval(self.parameters[key][0]) == types.IntType:
                         setattr(self.learner, key, int(float(tunedParameters[1][key])))
                     else:
@@ -1203,7 +1203,7 @@ def getOptParam(learner, trainDataFile, paramList = None, useGrid = False, verbo
         responseType = "Regression"
     else:
         print "WARNING!  Could not get the datase info. Data needed to be loaded in order to check the reponse type."
-        data = orange.ExampelTable(trainDataFile)
+        data = orange.ExampleTable(trainDataFile)
         responseType = data.domain.classVar.varType == orange.VarTypes.Discrete and "Classification"  or "Regression"
 
     optimizer = Appspack()
