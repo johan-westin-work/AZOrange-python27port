@@ -15,6 +15,12 @@ class AZorngTestUtil(unittest.TestCase):
         test_data = inData.select(selection, 1)
 
         return train_data, test_data
+    
+    def assertRoundedToExpectedArray(self, acctual, expectedValues, numberOfDigits):
+        roundedExpectedValues = [round(x, numberOfDigits) for x in expectedValues]
+        roundedAcctual = round(acctual, numberOfDigits)
+        self.assertTrue(roundedAcctual in roundedExpectedValues, "Not the expected value! Got: " + str(roundedAcctual) + ", should be one of " + str(roundedExpectedValues))
+    
 
 ##scPA Removed because we are using the evalUtilities.getClassificationAccuracy
 #    def getAccuracy(self, learner, test_data):
