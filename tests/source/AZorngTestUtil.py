@@ -16,9 +16,9 @@ class AZorngTestUtil(unittest.TestCase):
 
         return train_data, test_data
     
-    def assertRoundedToExpectedArray(self, acctual, expectedValues, numberOfDigits):
-        roundedExpectedValues = [round(x, numberOfDigits) for x in expectedValues]
-        roundedAcctual = round(acctual, numberOfDigits)
+    def assertRoundedToExpectedArray(self, acctual, expectedValues, numberOfDecimals):
+        roundedExpectedValues = [round(x, numberOfDecimals) for x in expectedValues]
+        roundedAcctual = round(acctual, numberOfDecimals)
         self.assertTrue(roundedAcctual in roundedExpectedValues, "Not the expected value! Got: " + str(roundedAcctual) + ", should be one of " + str(roundedExpectedValues))
     
 
