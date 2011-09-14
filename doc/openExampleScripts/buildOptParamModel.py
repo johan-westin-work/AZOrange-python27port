@@ -34,7 +34,7 @@ if __name__ == "__main__":
 
     # Get a learner object with optimized parameters (default settings)
     print "Optimizing model hyper-parameters"
-    optLearner, isOptimized = paramOptUtilities.optimize(AZOrangeLearner, learnerName, trainDataFile, responseType, verbose = 0, queueType = queueType, runPath = runPath)
+    optLearner, isOptimized = paramOptUtilities.getOptParam(AZOrangeLearner, learnerName, trainDataFile, responseType, verbose = 0, queueType = queueType, runPath = runPath)
 
     print "Parameters successfully optimized?"
     print isOptimized
