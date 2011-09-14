@@ -67,14 +67,20 @@ class GetAccWOptParam(AZorngTestUtil.AZorngTestUtil):
         paramList = ["nActVars"]
         evaluator = getAccWOptParam.AccWOptParamGetter(data = self.irisContData, learner = learner, paramList = paramList ,nExtFolds = 3, nInnerFolds = 3)
         res = evaluator.getAcc()
-        expectedRes = [0.97464488216654444, 0.97420405774, 0.974887867109, 0.97510044677]        # [InHouse, Ubuntu, Ubuntu 64 bits]
+        expectedRes = [
+                       0.97464488216654444, 0.97420405774, 0.974887867109, 0.97510044677,        # [InHouse, Ubuntu, Ubuntu 64 bits]
+                       0.97533758502003
+                      ] 
         self.log.info("")
         self.log.info("res.keys()" + str(res.keys()))
-        expected = [round(x,5) for x in expectedRes]
-        actual = round(res["R2"],5)
-        self.log.info("expected=" + str(expected))
-        self.log.info("actual  =" + str(actual))
-        self.assert_( actual in expected,"Got: "+str(res["R2"]))
+        if "R2" in res.keys():
+            acctual = res["R2"]
+        elif "Q2" in res.keys():
+            acctual = res["Q2"]
+        else:
+            acctual = None
+        self.assertNotEqual(None, acctual, "Could not find either 'R2' nor 'Q2' in the result.")            
+        self.assertRoundedToExpectedArray(acctual, expectedRes, 5)
 
 
 if __name__ == "__main__":
