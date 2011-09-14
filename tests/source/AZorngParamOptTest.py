@@ -107,7 +107,12 @@ class optimizerTest(AZorngTestUtil.AZorngTestUtil):
         self.assert_(opt.GSRes["nFailedPoints"]==0)
         self.assert_(opt.GSRes["nPoints"]==3)
         #CheckSum to assure results are the same
-        self.assert_(round(sum(opt.GSRes["results"]),2) == -1.78," Got: "+str(round(sum(opt.GSRes["results"]),2)) )  # Ver 0.3
+        expectedValues = [
+                           -1.78, # Ver 0.3
+                           -1.79
+                          ]
+        acctualValue = sum(opt.GSRes["results"])
+        self.assertRoundedToExpectedArray(acctualValue, expectedValues, 2)
 
         #Check if the best result was not the one with numThreads different of 1 since that way we can get 
         #different results among runs
