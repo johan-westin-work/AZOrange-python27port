@@ -1083,6 +1083,7 @@ print cPickle.dumps(eval(evalMethod)(res)[0])
         full_machinefile = os.path.join(self.runPath, "full_machinefile")
         appsFile = os.path.join(self.runPath, "input.apps")
         execFile = os.path.join(os.environ["AZORANGEHOME"],"orangeDependencies/bin/appspack_mpi")
+        mpitchHome = os.environ["MPICH_HOME"]
         self.qsubFile = os.path.join(self.runPath, "runQsub.sh")
 
         fid = open(self.qsubFile, "w")
@@ -1091,7 +1092,7 @@ print cPickle.dumps(eval(evalMethod)(res)[0])
 #$ -cwd
 #$ -N appspack_mpi
 #$ -pe pe_mpich """+str(self.np)+"""
-#$ -v MPICH_HOME=/opt/az/anlg/mpich/1.2.7p1
+#$ -v MPICH_HOME="""+ str(mpitchHome) + """
 
 exec 2>&1
 env | sort
