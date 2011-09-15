@@ -1020,12 +1020,17 @@ print cPickle.dumps(eval(evalMethod)(res)[0])
 
         presentDir = os.getcwd()
         os.chdir(self.runPath)
-        if self.verbose > 1: print "Command:  qsub -l mf="+str(memSize)+"M -q "+self.queueType+" "+self.qsubFile
-        exitCode, qsub = commands.getstatusoutput("qsub -l mf="+str(memSize)+"M -q "+self.queueType+" "+self.qsubFile)
+        command = "qsub -l mf=" + str(memSize) + "M -q " + self.queueType + " " + self.qsubFile
+        if self.verbose > 1:
+            print("In dir '" + os.getcwd() + "', about to run command '" + command + "'")
+        exitCode, qsub = commands.getstatusoutput(command)
         os.chdir(presentDir)
-        if self.verbose > 1: print "Exit Status: ",exitCode,"\n",qsub
-        try: self.qsubJobId = string.split(qsub)[2]
-        except: exitCode = 1
+        if self.verbose > 1:
+            print "Exit Status: ", exitCode, "\n" , qsub
+        try:
+            self.qsubJobId = string.split(qsub)[2]
+        except:
+            exitCode = 1
         return exitCode
 
     def createTempSSHkey(self):
@@ -1082,7 +1087,7 @@ print cPickle.dumps(eval(evalMethod)(res)[0])
         full_hostfile = os.path.join(self.runPath, "full_hostfile")
         full_machinefile = os.path.join(self.runPath, "full_machinefile")
         appsFile = os.path.join(self.runPath, "input.apps")
-        execFile = os.path.join(os.environ["AZORANGEHOME"],"orangeDependencies/bin/appspack_mpi")
+        execFile = os.path.join(os.environ["AZORANGEHOME"], "orangeDependencies", "bin", "appspack_mpi")
         mpitchHome = os.environ["MPICH_HOME"]
         self.qsubFile = os.path.join(self.runPath, "runQsub.sh")
 
@@ -1091,7 +1096,7 @@ print cPickle.dumps(eval(evalMethod)(res)[0])
 #$ -S /bin/bash
 #$ -cwd
 #$ -N appspack_mpi
-#$ -pe pe_mpich """+str(self.np)+"""
+#$ -pe pe_mpich """ + str(self.np) + """
 #$ -v MPICH_HOME="""+ str(mpitchHome) + """
 
 exec 2>&1
