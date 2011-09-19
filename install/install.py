@@ -1118,6 +1118,10 @@ class Installer(object):
         else:
             strFile += "alias azorange python " + os.path.join("$AZORANGEHOME", "orange", "OrangeCanvas", "orngCanvas.pyw") + "\n"
         #Modules
+        if shellType == SHELL_TYPE_BASH:
+            strFile += ". /etc/profile.d/modules.sh\n\n"
+        else:
+            strFile += "source /etc/profile.d/modules.csh\n\n"
         if eval(self.modules):
             strFile += "\n# AZOrange module dependencies\n"
             for mname in eval(self.modules):
