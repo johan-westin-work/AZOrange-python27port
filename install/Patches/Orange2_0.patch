@@ -169,21 +169,21 @@ diff -crBN orange2.0/source/orange/tabdelim.cpp orange2.0_PatchedOK/source/orang
       if (status == 3)
 ***************
 *** 509,515 ****
-        const char *ceni = ai->c_str();
-        if (   !*ceni
-            || !ceni[1] && ((*ceni=='?') || (*ceni=='.') || (*ceni=='~') || (*ceni=='*'))
-!           || (*ai == "NA") || (DC && (*ai == DC)) || (DK && (*ai == DK)))
-           continue;
+          const char *ceni = ai->c_str();
+          if (   !*ceni
+              || !ceni[1] && ((*ceni=='?') || (*ceni=='.') || (*ceni=='~') || (*ceni=='*'))
+!             || (*ai == "NA") || (DC && (*ai == DC)) || (DK && (*ai == DK)))
+             continue;
 
-        map<string, int>::iterator vf = di->values.lower_bound(*ai);
+          map<string, int>::iterator vf = di->values.lower_bound(*ai);
 --- 509,515 ----
-        const char *ceni = ai->c_str();
-        if (   !*ceni
-            || !ceni[1] && ((*ceni=='?') || (*ceni=='.') || (*ceni=='~') || (*ceni=='*'))
-!           || (strToUpper(*ai) == "NA") || (strToUpper(*ai) == "N/A") || (strToUpper(*ai) == "ERROR") || (strToUpper(*ai) == "MIS_VAL") || (strToUpper(*ai) == "NAN") || (DC && (*ai == DC)) || (DK && (*ai == DK)))  //scPA  added the symbols "error", "MIS_VAL" and "NAN"     //ecPA
-           continue;
+          const char *ceni = ai->c_str();
+          if (   !*ceni
+              || !ceni[1] && ((*ceni=='?') || (*ceni=='.') || (*ceni=='~') || (*ceni=='*'))
+!             || (strToUpper(*ai) == "NA") || (strToUpper(*ai) == "N/A") || (strToUpper(*ai) == "ERROR") || (strToUpper(*ai) == "MIS_VAL") || (strToUpper(*ai) == "NAN") || (DC && (*ai == DC)) || (DK && (*ai == DK)))  //scPA  added the symbols "error", "MIS_VAL" and "NAN"     //ecPA
+             continue;
 
-        map<string, int>::iterator vf = di->values.lower_bound(*ai);
+          map<string, int>::iterator vf = di->values.lower_bound(*ai);
 ***************
 *** 849,855 ****
         raiseErrorWho("write", "string '%s' cannot be written to a file since it contains invalid characters", c);
@@ -252,20 +252,20 @@ diff -crBN orange2.0/source/orange/tabdelim.cpp orange2.0_PatchedOK/source/orang
 ***************
 *** 904,910 ****
                 fprintf(file, " ");
-
+  
               if (mval.floatV == 1.0)
-!               fprintf(file, checkCtrl(var.name.c_str()));
+!               fprintf(file, checkCtrl(var.get_name().c_str()));
               else {
                 var.val2filestr(mval, st, *ex);
-                fprintf(file, "%s=%s", checkCtrl(var.name.c_str()), checkCtrl(st.c_str()));
+                fprintf(file, "%s=%s", checkCtrl(var.get_name().c_str()), checkCtrl(st.c_str()));
 --- 930,936 ----
                 fprintf(file, " ");
 
               if (mval.floatV == 1.0)
-!               fprintf(file, "%s", checkCtrl(var.name.c_str()));
+!               fprintf(file, "%s", checkCtrl(var.get_name().c_str()));
               else {
                 var.val2filestr(mval, st, *ex);
-                fprintf(file, "%s=%s", checkCtrl(var_name.c_str()), checkCtrl(st.c_str()));
+                fprintf(file, "%s=%s", checkCtrl(var.get_name().c_str()), checkCtrl(st.c_str()));
 ***************
 *** 939,945 ****
         fprintf(file, "d");
@@ -486,93 +486,3 @@ diff -crBN orange2.0/source/orange/tabdelim.hpp orange2.0_PatchedOK/source/orang
   
   makefile.deps:
   	python ../pyxtract/makedep.py -n $(MODULENAME)
-*** orange2.0/OrangeWidgets/OWBaseWidget.py	2011-09-01 17:47:53.800499510 +0100
---- orange2.0_PatchedOK/OrangeWidgets/OWBaseWidget.py	2011-09-01 14:50:35.520493387 +0100
-***************
-*** 49,55 ****
-              setattr(obj, lastname, value)
-  #            obj.__dict__[lastname] = value
-  
-!     controlledAttributes = getattr(self, "controlledAttributes", None)
-      controlCallback = controlledAttributes and controlledAttributes.get(name, None)
-      if controlCallback:
-          for callback in controlCallback:
---- 49,55 ----
-              setattr(obj, lastname, value)
-  #            obj.__dict__[lastname] = value
-  
-!     controlledAttributes = hasattr(self, "controlledAttributes") and getattr(self, "controlledAttributes", None)
-      controlCallback = controlledAttributes and controlledAttributes.get(name, None)
-      if controlCallback:
-          for callback in controlCallback:
-***************
-*** 64,70 ****
-                      del self.__attributeControllers[(controller, myself)]
-                      continue
-  
-!                 controlledAttributes = getattr(controller, "controlledAttributes", None)
-                  if controlledAttributes:
-                      fullName = myself + "." + name
-  
---- 64,70 ----
-                      del self.__attributeControllers[(controller, myself)]
-                      continue
-  
-!                 controlledAttributes = hasattr(controller, "controlledAttributes") and getattr(controller, "controlledAttributes", None) 
-                  if controlledAttributes:
-                      fullName = myself + "." + name
-  
-***************
-*** 135,148 ****
-  
-  
-      def __init__(self, parent = None, signalManager = None, title="Orange BaseWidget", modal=FALSE, savePosition = False, resizingEnabled = 1, **args):
-          # do we want to save widget position and restore it on next load
-          self.savePosition = savePosition
-          if savePosition:
-              self.settingsList = getattr(self, "settingsList", []) + ["widgetWidth", "widgetHeight", "widgetXPosition", "widgetYPosition", "widgetShown", "savedWidgetGeometry"]
-  
--         if resizingEnabled: QDialog.__init__(self, parent, Qt.Window)
--         else:               QDialog.__init__(self, parent, Qt.Dialog | Qt.MSWindowsFixedSizeDialogHint)# | Qt.WindowMinimizeButtonHint)
-- 
-          # directories are better defined this way, otherwise .ini files get written in many places
-          self.__dict__.update(orngEnviron.directoryNames)
-          try:
---- 135,150 ----
-  
-  
-      def __init__(self, parent = None, signalManager = None, title="Orange BaseWidget", modal=FALSE, savePosition = False, resizingEnabled = 1, **args):
-+         if resizingEnabled: 
-+             QDialog.__init__(self, parent, Qt.Window) 
-+         else: 
-+             QDialog.__init__(self, parent, Qt.Dialog | Qt.MSWindowsFixedSizeDialogHint)# | Qt.WindowMinimizeButtonHint) 
-+         
-          # do we want to save widget position and restore it on next load
-          self.savePosition = savePosition
-          if savePosition:
-              self.settingsList = getattr(self, "settingsList", []) + ["widgetWidth", "widgetHeight", "widgetXPosition", "widgetYPosition", "widgetShown", "savedWidgetGeometry"]
-  
-          # directories are better defined this way, otherwise .ini files get written in many places
-          self.__dict__.update(orngEnviron.directoryNames)
-          try:
-*** orange2.0/OrangeWidgets/OWkNNOptimization.py	2011-09-01 17:47:53.800499510 +0100
---- orange2.0_PatchedOK/OrangeWidgets/OWkNNOptimization.py	2011-09-01 14:51:34.200493421 +0100
-***************
-*** 21,28 ****
-      moreArgumentsNums = [50, 55, 60, 65, 70, 75, 80, 85, 90, 95]
-  
-      def __init__(self, parentWidget = None, signalManager = None, graph = None, visualizationMethod = SCATTERPLOT, parentName = "Visualization widget"):
--         VizRank.__init__(self, visualizationMethod, graph)
-          OWWidget.__init__(self, None, signalManager, "VizRank Dialog", savePosition = True, wantMainArea = 0, wantStatusBar = 1)
-  
-          self.parentWidget = parentWidget
-          self.parentName = parentName
---- 21,28 ----
-      moreArgumentsNums = [50, 55, 60, 65, 70, 75, 80, 85, 90, 95]
-  
-      def __init__(self, parentWidget = None, signalManager = None, graph = None, visualizationMethod = SCATTERPLOT, parentName = "Visualization widget"):
-          OWWidget.__init__(self, None, signalManager, "VizRank Dialog", savePosition = True, wantMainArea = 0, wantStatusBar = 1)
-+         VizRank.__init__(self, visualizationMethod, graph)
-  
-          self.parentWidget = parentWidget
-          self.parentName = parentName
