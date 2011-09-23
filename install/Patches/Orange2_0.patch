@@ -305,8 +305,28 @@ diff -crBN orange2.0/source/orange/tabdelim.hpp orange2.0_PatchedOK/source/orang
   
     virtual bool readExample (TFileExampleIteratorData &, TExample &);
   
-*** orange2.0/install-scripts/linux/setup.py    2007-02-20 20:20:17.000000000 +0000
---- orange2.0_PatchedOK/install-scripts/linux/setup.py  2010-05-27 14:59:32.673526075 +0100
+*** orange2.0/source/makefile.defs	2010-12-14 09:27:09.305699779 +0000
+--- orange2.0_PatchedOK/source/makefile.defs	2011-01-05 11:36:03.985729333 +0000
+***************
+*** 59,65 ****
+  	$(COMPILER) $(COMPILEOPTIONS) -c $< -o $@
+  
+  
+! export CPATH=ppp:px:../include:../orange:$(PYTHONINCLUDE):/usr/local/include:/usr/include:$(PYTHONSITEPKGS)/numpy/core/include
+  
+  makefile.deps:
+  	python ../pyxtract/makedep.py -n $(MODULENAME)
+--- 59,66 ----
+  	$(COMPILER) $(COMPILEOPTIONS) -c $< -o $@
+  
+  
+! #export CPATH=ppp:px:../include:../orange:$(PYTHONINCLUDE):/usr/local/include:/usr/include:$(PYTHONSITEPKGS)/numpy/core/include
+! export CPATH=ppp:px:../include:../orange:$(PYTHONINCLUDE):/usr/local/include:/usr/include:$(NUMPY_INCLUDE)
+  
+  makefile.deps:
+  	python ../pyxtract/makedep.py -n $(MODULENAME)
+*** orange2.0/install-scripts/linux/setup.py	2007-02-20 21:20:17.000000000 +0100
+--- orange2.0_PatchedOK/install-scripts/linux/setup.py	2011-09-23 15:24:04.000000000 +0200
 ***************
 *** 5,11 ****
   # all kind of checks
@@ -325,7 +345,85 @@ diff -crBN orange2.0/source/orange/tabdelim.hpp orange2.0_PatchedOK/source/orang
   # got* is used to gather information of the system and print it out at the end
   gotPython = '';
 ***************
-*** 87,95 ****
+*** 37,61 ****
+  #    sys.exit(1)
+  
+  try:
+!     import qt,pyqtconfig
+  except:
+      print "NOTE: Python Qt not installed, OrangeCanvas and OrangeWidgets will not work."
+      print "You can get it at: http://www.riverbankcomputing.co.uk/pyqt/index.php"
+-     # we are using Qt 2.3 - Qt 3.3
+  
+  try:
+!     gotPyQt = pyqtconfig.Configuration().pyqt_version_str;
+  except:
+!     gotPyQt = ''
+      # any PyQt that supports Qt 2.3-3.8
+  
+  try:
+      import sipconfig
+!     tmp = "%x" % sipconfig.Configuration().qt_version
+!     gotPy = tmp.replace('0','.')
+  except:
+      print "Sipconfig not found, Qt version could not be found!"
+!     gotPy = ''
+      # depends on version of PyQt
+  
+  try:
+--- 37,60 ----
+  #    sys.exit(1)
+  
+  try:
+!     import PyQt4.QtCore
+  except:
+      print "NOTE: Python Qt not installed, OrangeCanvas and OrangeWidgets will not work."
+      print "You can get it at: http://www.riverbankcomputing.co.uk/pyqt/index.php"
+  
+  try:
+!     gotPyQt = PyQt4.QtCore.PYQT_VERSION_STR
+  except:
+!     gotPyQt = 'n/a'
+      # any PyQt that supports Qt 2.3-3.8
+  
+  try:
++     import PyQt4.pyqtconfig
+      import sipconfig
+!     gotPy = sipconfig.version_to_string(PyQt4.pyqtconfig.Configuration().qt_version)
+  except:
+      print "Sipconfig not found, Qt version could not be found!"
+!     gotPy = 'n/a'
+      # depends on version of PyQt
+  
+  try:
+***************
+*** 74,84 ****
+      gotNumPy = "n/a"
+  
+  try:
+!     import qwt
+!     gotQwt = "n/a"
+  except:
+      print "PyQwt not installed!"
+      print "You can get it at: http://pyqwt.sourceforge.net/"
+      # depends on PyQt
+      
+  if os.system("gcc --version > /dev/null 2>&1") != 0:
+--- 73,84 ----
+      gotNumPy = "n/a"
+  
+  try:
+!     import PyQt4.Qwt5 as qwt
+!     gotQwt = qwt.QWT_VERSION_STR
+  except:
+      print "PyQwt not installed!"
+      print "You can get it at: http://pyqwt.sourceforge.net/"
++     gotQwt = "n/a"
+      # depends on PyQt
+      
+  if os.system("gcc --version > /dev/null 2>&1") != 0:
+***************
+*** 87,99 ****
   
   # catching version of GCC
   try:
@@ -335,7 +433,11 @@ diff -crBN orange2.0/source/orange/tabdelim.hpp orange2.0_PatchedOK/source/orang
   except:
       print "Can not determine GCC version!"
       gotGcc = "n/a"
---- 87,95 ----
+-     # version 3.3 on
+  
+  if OrangeVer is "ADDVERSION":
+      print "Version should be added manually (edit setup.py and replace ADDVERSION)"
+--- 87,98 ----
   
   # catching version of GCC
   try:
@@ -345,6 +447,9 @@ diff -crBN orange2.0/source/orange/tabdelim.hpp orange2.0_PatchedOK/source/orang
   except:
       print "Can not determine GCC version!"
       gotGcc = "n/a"
+  
+  if OrangeVer is "ADDVERSION":
+      print "Version should be added manually (edit setup.py and replace ADDVERSION)"
 ***************
 *** 245,251 ****
           install_data.finalize_options(self)
@@ -354,7 +459,7 @@ diff -crBN orange2.0/source/orange/tabdelim.hpp orange2.0_PatchedOK/source/orang
   #            OrangeInstallLib = os.path.join(self.install_dir, "lib")
               self.data_files = [(OrangeInstallDir, OrangeLibs),
                                  (os.path.join(OrangeInstallDir,
---- 245,251 ----
+--- 244,250 ----
           install_data.finalize_options(self)
           if self.install_dir != os.path.join(self.root, sys.prefix):
               OrangeInstallDir = os.path.join(self.install_dir, "orange")
@@ -364,7 +469,7 @@ diff -crBN orange2.0/source/orange/tabdelim.hpp orange2.0_PatchedOK/source/orang
                                  (os.path.join(OrangeInstallDir,
 ***************
 *** 267,272 ****
---- 267,293 ----
+--- 266,292 ----
                   self.data_files += [(os.path.join(OrangeInstallDoc,
                                                root.split('doc/')[-1]), OrangeDocs)]
   
@@ -402,7 +507,7 @@ diff -crBN orange2.0/source/orange/tabdelim.hpp orange2.0_PatchedOK/source/orang
               fo.write(self.orangepath)
               fo.close()
               OrangeInstallDir = os.path.join(self.orangepath, "orange")
---- 405,413 ----
+--- 404,412 ----
   
           if self.orangepath != None:
               # we save orangepath for uninstallation to the file user_install
@@ -427,7 +532,7 @@ diff -crBN orange2.0/source/orange/tabdelim.hpp orange2.0_PatchedOK/source/orang
   
   # Adding each doc/* directory by itself
   for root, dirs, files in os.walk(os.path.join("doc")):
---- 469,506 ----
+--- 468,505 ----
   OrangeWidgetIcons = glob(os.path.join("OrangeWidgets", "icons", "*.png"))
   OrangeCanvasIcons = glob(os.path.join("OrangeCanvas",  "icons", "*.png"))
   OrangeCanvasPyw   = glob(os.path.join("OrangeCanvas", "orngCanvas.pyw"));
@@ -466,23 +571,3 @@ diff -crBN orange2.0/source/orange/tabdelim.hpp orange2.0_PatchedOK/source/orang
   
   # Adding each doc/* directory by itself
   for root, dirs, files in os.walk(os.path.join("doc")):
-*** orange2.0/source/makefile.defs	2010-12-14 09:27:09.305699779 +0000
---- orange2.0_PatchedOK/source/makefile.defs	2011-01-05 11:36:03.985729333 +0000
-***************
-*** 59,65 ****
-  	$(COMPILER) $(COMPILEOPTIONS) -c $< -o $@
-  
-  
-! export CPATH=ppp:px:../include:../orange:$(PYTHONINCLUDE):/usr/local/include:/usr/include:$(PYTHONSITEPKGS)/numpy/core/include
-  
-  makefile.deps:
-  	python ../pyxtract/makedep.py -n $(MODULENAME)
---- 59,66 ----
-  	$(COMPILER) $(COMPILEOPTIONS) -c $< -o $@
-  
-  
-! #export CPATH=ppp:px:../include:../orange:$(PYTHONINCLUDE):/usr/local/include:/usr/include:$(PYTHONSITEPKGS)/numpy/core/include
-! export CPATH=ppp:px:../include:../orange:$(PYTHONINCLUDE):/usr/local/include:/usr/include:$(NUMPY_INCLUDE)
-  
-  makefile.deps:
-  	python ../pyxtract/makedep.py -n $(MODULENAME)
