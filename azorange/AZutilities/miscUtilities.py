@@ -193,7 +193,6 @@ def generateUniqueFile(desc = "", baseDir = SCRATCHDIR, ext = ""):
     """Generates a unique file Path
        If baseDir is None or "", it generates a unique file name
     """
-    print baseDir
     while True:
         randNr = random.randint(0,10000)
         file = "scratchFile_"+str(desc)+"_"+str(time.time()).replace(".","")+"-"+str(randNr)
