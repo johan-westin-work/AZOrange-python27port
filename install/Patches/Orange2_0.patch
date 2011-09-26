@@ -451,6 +451,23 @@ diff -crBN orange2.0/source/orange/tabdelim.hpp orange2.0_PatchedOK/source/orang
   if OrangeVer is "ADDVERSION":
       print "Version should be added manually (edit setup.py and replace ADDVERSION)"
 ***************
+*** 218,224 ****
+          SourceDir = os.path.join("source")
+          os.chdir(SourceDir)
+          print "Compiling... this might take a while, logging into compiling.log...",
+!         make=self.makeCmd+"> ../compiling.log"
+          retval = os.system(make)
+          if retval != 0:
+              print "Compiling Orange failed... exiting!"
+--- 218,224 ----
+          SourceDir = os.path.join("source")
+          os.chdir(SourceDir)
+          print "Compiling... this might take a while, logging into compiling.log...",
+!         make=self.makeCmd+" EXCLUDE_ORANGEQT=1 > ../compiling.log"
+          retval = os.system(make)
+          if retval != 0:
+              print "Compiling Orange failed... exiting!"
+***************
 *** 245,251 ****
           install_data.finalize_options(self)
           if self.install_dir != os.path.join(self.root, sys.prefix):
@@ -571,20 +588,3 @@ diff -crBN orange2.0/source/orange/tabdelim.hpp orange2.0_PatchedOK/source/orang
   
   # Adding each doc/* directory by itself
   for root, dirs, files in os.walk(os.path.join("doc")):
-***************
-*** 218,224 ****
-          SourceDir = os.path.join("source")
-          os.chdir(SourceDir)
-          print "Compiling... this might take a while, logging into compiling.log...",
-!         make=self.makeCmd+"> ../compiling.log"
-          retval = os.system(make)
-          if retval != 0:
-              print "Compiling Orange failed... exiting!"
---- 218,224 ----
-          SourceDir = os.path.join("source")
-          os.chdir(SourceDir)
-          print "Compiling... this might take a while, logging into compiling.log...",
-!         make=self.makeCmd+" EXCLUDE_ORANGEQT=1 > ../compiling.log"
-          retval = os.system(make)
-          if retval != 0:
-              print "Compiling Orange failed... exiting!"
