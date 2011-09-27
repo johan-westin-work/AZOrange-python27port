@@ -150,16 +150,20 @@ def ConfMat(res = None):
         if res == None:
             return {"type":CLASSIFICATION}
 
-        confMat = orngStat.confusionMatrices(res)[0]
-        if len(res.classValues) == 2:
-            # NOTE: orngStat returns TN, TP, FN, FP with inverted labels, so we have to set properly:
-            cm = [[confMat.TN, confMat.FP],[confMat.FN, confMat.TP]]
-        else:
-            cm = confMat
-        return cm
+        confMat_s = orngStat.confusionMatrices(res)
+        retCM = []
+        for confMat in confMat_s:
+            if len(res.classValues) == 2:
+                # NOTE: orngStat returns TN, TP, FN, FP with inverted labels, so we have to set properly:
+                cm = [[confMat.TN, confMat.FP],[confMat.FN, confMat.TP]]
+            else:
+                cm = confMat
+            retCM.append(cm)
+        return retCM
+
 
 def getConfMat(testData, model):
-        return ConfMat(orngTest.testOnData([model], testData))
+        return ConfMat(orngTest.testOnData([model], testData))[0]
 
 def calcKappa(_CM):
     """Returns the Kappa statistical coefficient for the agreement between measured and predicted classes"""
@@ -181,7 +185,10 @@ def calcKappa(_CM):
 def Kappa(res=None):
     if res == None:
         return {"type":CLASSIFICATION}
-    return [calcKappa(ConfMat(res))]
+    Kappa_s = []
+    for cm in ConfMat(res):
+        Kappa_s.append(calcKappa(cm))
+    return Kappa_s
 
 def generalCVconfMat(data, learners, nFolds = 5):
     """
