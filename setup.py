@@ -695,10 +695,13 @@ class Installer:
             mpiFlags = "--with-mpi-compilers"
         else:
             mpiFlags = ""
+        compileFlags = " CC=gcc CXX=g++ "
+        if self.openInstall:
+            compileFlags += " F77=gfortran "
         if self.platform[0:3] == "GAS":
-            stat, out = commands.getstatusoutput("./configure CC=gcc CXX=g++ --prefix=%s --with-blas=%s --with-lapack=%s %s" % (self.orangeDependenciesDir,os.environ["ATLAS"],os.environ["ATLAS"],mpiFlags))
+            stat, out = commands.getstatusoutput("./configure "+compileFlags+" --prefix=%s --with-blas=%s --with-lapack=%s %s" % (self.orangeDependenciesDir,os.environ["ATLAS"],os.environ["ATLAS"],mpiFlags))
         else:
-            stat, out = commands.getstatusoutput("./configure CC=gcc CXX=g++ --prefix=%s %s" % (self.orangeDependenciesDir,mpiFlags))
+            stat, out = commands.getstatusoutput("./configure "+compileFlags+" --prefix=%s %s" % (self.orangeDependenciesDir,mpiFlags))
             
         checkStatus(stat, out,"Error configuring APPSPack.")
 
