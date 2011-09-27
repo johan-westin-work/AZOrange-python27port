@@ -691,7 +691,7 @@ class Installer:
                 print "WARNING: Running version '"+version+"' of "+mpiC+"\n         At least version ",minVer, " is required!"
             print "WARNING: MPI version of APPSPACK for the optimizer  will not be available!"
 
-        if self.mpiCVerOK: 
+        if self.mpiCVerOK and not self.openInstall: 
             mpiFlags = "--with-mpi-compilers"
         else:
             mpiFlags = ""
