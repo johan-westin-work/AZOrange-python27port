@@ -12,6 +12,7 @@ sudo apt-get install -y swig
 sudo apt-get install -y libatlas-base-dev
 sudo apt-get install -y python-numpy
 sudo apt-get install -y python-sip
+sudo apt-get install -y python-networkx 
 #Using qt Ver. 4.6.2
 sudo apt-get install -y python-qt4
 sudo apt-get install -y python-dev
