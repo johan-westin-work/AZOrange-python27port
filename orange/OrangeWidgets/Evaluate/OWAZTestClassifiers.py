@@ -300,15 +300,7 @@ class OWAZTestClassifiers(OWWidget):
                 scores.append([None] * len(self.classifiers))
                 
         for (i, l) in enumerate(classifiers):
-            currClassifier = self.classifiers[l.id]
-            currScores = []
-            for s in scores:
-                score = None
-                if s:
-                    if len(s) > i:
-                        score = s[i]
-                currScores.append(score)
-            currClassifier.scores = currScores  
+            self.classifiers[l.id].scores = [s[i] if s else None for s in scores]
             
         self.sendResults()
 
